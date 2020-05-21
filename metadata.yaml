@@ -1,0 +1,19 @@
+author: IceDynamix
+lang: en
+geometry: margin=3cm
+template: a4paper
+toc: true
+numbersections: true
+colorlinks: true
+header-includes:
+  - |
+    ```{=latex}
+    \usepackage{titlesec}
+    \newcommand{\sectionbreak}{\clearpage} % Sections on new page
+    ```
+panflute-path: filters
+panflute-filters:
+  - removeToc
+  - shiftHeadingsMinusOne
+  - addCompileDate
+  - insertStrippedCode
