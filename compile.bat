@@ -12,7 +12,7 @@ cd ..
 
 echo -- 2/2 -- Generating files...
 
-pandoc .\base.md --metadata-file=".\metadata.yaml" -o .\compiled\quaver_plugin_guide.md -t gfm --filter=.\filters\insertStrippedCode.py --quiet
-pandoc .\base.md --metadata-file=".\metadata.yaml" -o .\compiled\quaver_plugin_guide.pdf --pdf-engine-opt="-quiet" -F panflute --quiet
+pandoc .\base_template.md --metadata-file=".\metadata.yaml" -o .\quaver_plugin_guide.md -t gfm --filter=.\filters\insertStrippedCode.py --quiet
+pandoc .\base_template.md --metadata-file=".\metadata.yaml" -o .\quaver_plugin_guide.pdf --pdf-engine-opt="-quiet" -F panflute --quiet
 
 echo -- Done!
