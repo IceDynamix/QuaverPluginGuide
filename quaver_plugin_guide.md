@@ -749,7 +749,7 @@ function**.
 
 Remember:
 
-1.  Create Object with `util.Create___()`
+1.  Create Object with `utils.Create___()`
 2.  Place Object with `action.Place___()`
 
 <!-- end list -->
@@ -759,15 +759,15 @@ Remember:
       - [Action](#editor-actions) function
       - [ActionBatch](#editor-actions) batch function
   - HitObject
-      - `util.CreateHitObject()`
+      - `utils.CreateHitObject()`
       - `action.PlaceHitObject(obj)`
       - `action.PlaceHitObjectBatch(table)`
   - ScrollVelocity
-      - `util.CreateScrollVelocity()`
+      - `utils.CreateScrollVelocity()`
       - `action.PlaceScrollVelocity(obj)`
       - `action.PlaceScrollVelocityBatch(table)`
   - TimingPoint
-      - `util.CreateTimingPoint()`
+      - `utils.CreateTimingPoint()`
       - `action.PlaceTimingPoint(obj)`
       - `action.PlaceTimingPointBatch(table)`
 
@@ -778,7 +778,7 @@ Remember:
 
 -- Note at the current editor position in lane 1
 -- You would place a long note by specifiying an end time, refer to section Utilities
-obj = util.CreateHitObject(1, state.SongTime)
+obj = utils.CreateHitObject(1, state.SongTime)
 actions.PlaceHitObject(obj)
 
 -- This is an example for a single SV point.
@@ -916,7 +916,7 @@ files/modules would be
 When you put functions or variables into different files/modules, all
 you’re really doing is defining a table with value and function
 assignments in another file, so in the end you can call your functions
-like `menu.example()` or `util.retrieveStateVariables()`. But if a
+like `menu.example()` or `utilities.retrieveStateVariables()`. But if a
 module is just defining functions and values for a table, then that can
 be done in a single file as well\!
 
@@ -934,18 +934,18 @@ function menu.example()
     local menuID = "example"
     local vars = { myNumber = -1 }
 
-    util.retrieveStateVariables(menuID, vars)
+    utilities.retrieveStateVariables(menuID, vars)
     vars.myNumber = vars.myNumber + 1
-    util.saveStateVariables(menuID, vars)
+    utilities.saveStateVariables(menuID, vars)
 end
 
-function util.retrieveStateVariables(menuID, variables)
+function utilities.retrieveStateVariables(menuID, variables)
     for key in pairs(variables) do
         variables[key] = state.GetValue(menuID..key) or variables[key]
     end
 end
 
-function util.saveStateVariables(menuID, variables)
+function utilities.saveStateVariables(menuID, variables)
     for key in pairs(variables) do
         state.SetValue(menuID..key, variables[key])
     end
@@ -1292,8 +1292,8 @@ void Dispose();
 
 ### Utilities
 
-Accessible via `util.function()`, refer to [Structures](#structures) for
-more information on the returned objects.
+Accessible via `utils.function()`, refer to [Structures](#structures)
+for more information on the returned objects.
 
 ``` cs
 // Quaver/Quaver.Shared/Screens/Edit/Plugins/EditorPluginUtils.cs
