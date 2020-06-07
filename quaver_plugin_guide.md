@@ -31,8 +31,6 @@
           - [Plots](#plots)
               - [Pushing and popping](#pushing-and-popping)
           - [More UI elements](#more-ui-elements)
-          - [Note about Slider/Drag Int/Float 4
-            types](#note-about-sliderdrag-intfloat-4-types)
           - [Styling](#styling)
               - [Plugin Sizes](#plugin-sizes)
               - [Plugin Colors](#plugin-colors)
@@ -45,6 +43,11 @@
           - [Module management](#module-management)
           - [Using an actual multi-file
             structure](#using-an-actual-multi-file-structure)
+      - [Noteworthy findings](#noteworthy-findings)
+          - [Instant plugin update](#instant-plugin-update)
+          - [Slider/Drag Int/Float 4
+            types](#sliderdrag-intfloat-4-types)
+          - [Vector2/3/4 Datatypes](#vector234-datatypes)
       - [Available resources](#available-resources)
           - [Quaver Enums](#quaver-enums)
               - [GameMode](#gamemode)
@@ -208,6 +211,8 @@ to the table with `table.insert(myTable, myVariable)`. Access table
 elements with `myTable[key]`, where key can be of any type. You can also
 access them with `myTable.key`.
 
+Important: Take note that everything in Lua is indexed from 1, not 0\!
+
 Related: [Lua-users.org Tables
 Tutorial](http://lua-users.org/wiki/TablesTutorial)
 
@@ -309,15 +314,20 @@ end
 ### Debugging
 
 I’ll be honest: the error messages the console returns on bad code are
-nearly useless. You’ll have to do some manual debugging, commenting out
-code piece by piece and printing to the Quaver logs
-(`Quaver/Logs/runtime.log`) with the `print()` function in Lua. Or you
-can write the content of a variable into a `imgui.TextWrapped()` in the
-plugin. It’s up to you.
+nearly useless. You’ll have to do some manual debugging and comment out
+code piece by piece until you hit the part that hurts. If you’re
+building Quaver yourself and have the console available, it’s possible
+to print to the console using `print()` in Lua. Or you can write the
+content of a variable into a `imgui.TextWrapped()` in the plugin. It’s
+up to you.
 
 If you’re testing an algorithm, I don’t recommend testing that algorithm
 in an actual plugin. Do it in an actual Lua interpreter. Go on a website
 if you will.
+
+I made a
+[plugin](https://gist.github.com/IceDynamix/2269f6f486752413eb987b741454d029)
+that displays all state/map variables for debugging purposes.
 
 ### Useful links
 
@@ -619,22 +629,6 @@ Just apply different syntax (`imgui.Function()` instead of
 `ImGui::Function()`) and apply pointers/addresses/ref parameters as seen
 in [Creating an integer input box](#creating-an-integer-input-box).
 
-### Note about Slider/Drag Int/Float 4 types
-
-It seems that the order of return values is not like you’d expect. The
-order is actually 4,1,2,3. Here’s a small example:
-
-``` lua
-local n1,n2,n3,n4
-local vars = {n1,n2,n3,n4}
-_, vars = imgui.DragFloat4("label", vars)
-n4,n1,n2,n3 = vars
-```
-
-I know, it’s weird. But there isn’t really anything you can do about it.
-I assume it’s got something to do with how Lua table indexing starts at
-1.
-
 ### Styling
 
 Following code will bring up the style editor, where you can experiment
@@ -738,6 +732,12 @@ You need to convert that into:
 ``` lua
 imgui.PushStyleColor(imgui_col.Element, {0.10, 0.20, 0.30, 0.40});
 ```
+
+I made a [very lazy
+plugin](https://gist.github.com/IceDynamix/eeb735e6206b5c48c08b9011a192e200),
+that converts the C++ code into Lua code, so you don’t have to do it
+yourself. Make sure to rename the plugin file to plugin.lua and put
+everything into a directory in your plugins folder.
 
 ## Interact with the editor and maps
 
@@ -994,6 +994,54 @@ Cons:
         press F6
   - User has to download a lot more files when pulling with Git
 
+## Noteworthy findings
+
+### Instant plugin update
+
+While Swan has implemented the feature that the plugin updates
+automatically on file change, it actually doesn’t work for me. It only
+(partially) works, when I write to the file via a Python script, instead
+of using my usual editor (VSCode). It complains about a file access
+error, which I don’t seem to understand.
+
+The “partially” part of the script save is that only basic text changes
+work. If anything regarding functions, button behaviors or similar is
+changed, the plugin loads to the point to where everything stayed the
+same and then simply stop loading (needs further confirmation).
+
+So whether I save the plugin file via my editor or a script, I still
+have to leave and reenter the editor to view an updated version of my
+plugins.
+
+### Slider/Drag Int/Float 4 types
+
+It seems that the order of return values is not like you’d expect. The
+order is actually 4,1,2,3. Here’s a small example:
+
+``` lua
+local n1,n2,n3,n4
+local vars = {n1,n2,n3,n4}
+_, vars = imgui.DragFloat4("label", vars)
+n4,n1,n2,n3 = vars
+```
+
+I know, it’s weird. But there isn’t really anything you can do about it.
+I assume it’s got something to do with how Lua table indexing starts at
+1.
+
+### Vector2/3/4 Datatypes
+
+ImGui uses a custom array datatype that contains 2/3/4 elements, called
+Vector2 (or Vector3/Vector4), depending on the amount of elements. If a
+function asks for it, you can use the function `imgui.CreateVector2(int
+x, int y)` (or the 3/4 element equivalents) to create a vector of that
+type that you can pass to the function. You can (almost always) use a
+regular table of length 2/3/4 instead though, since it has been observed
+to work as well. The only instance I have personally found it to not
+work is for the size parameter in the plot functions, where you’re
+forced to create a vector using said function as it won’t work
+otherwise.
+
 ## Available resources
 
 All of the code blocks in this file are automatically generated from
@@ -1055,6 +1103,8 @@ The PascalCase name is simply converted into a snake\_case variant.
 | `ImGuiTabItemFlags`    | `imgui_tab_item_flags`   |
 | `ImGuiColorEditFlags`  | `imgui_color_edit_flags` |
 | `ImGuiCol`             | `imgui_col`              |
+
+Note: ImGuiStyleVar is not implemented yet, will come at a later date.
 
 In-depth structure of enums can be found in
 [ImGui.NET/C\#\_Enums](https://github.com/mellinoe/ImGui.NET/tree/master/src/ImGui.NET/Generated)

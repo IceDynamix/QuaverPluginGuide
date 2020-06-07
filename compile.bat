@@ -2,7 +2,7 @@
 
 echo -- 1/2 -- Updating quaver...
 
-:: We only case about the current state and not the entire git history of Quaver, so
+:: We only care about the current state and not the entire git history of Quaver, so
 :: --depth 1 is used to reduce the total size of the downloaded files
 if not exist .\Quaver\ git clone https://github.com/Quaver/Quaver --depth 1
 cd Quaver
