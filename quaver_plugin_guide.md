@@ -777,7 +777,8 @@ Remember:
 -- This is an example for a single hitobject.
 
 -- Note at the current editor position in lane 1
--- You would place a long note by specifiying an end time, refer to section Utilities
+-- You would place a long note by specifiying an end time, refer to
+-- section Utilities
 obj = utils.CreateHitObject(1, state.SongTime)
 actions.PlaceHitObject(obj)
 

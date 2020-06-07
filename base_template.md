@@ -102,8 +102,8 @@ Use any editor you like, preferably one that has syntax highlighting for Lua.
 
 [ImGui][ImGui], the base of the plugin system, was originally written in C++.
 Since Quaver is written in C#, a C# implementation for ImGui called
-[ImGui.NET][ImGui.NET] is used. And finally, to make things easier to write,
-the script language Lua in a sandbox environment with the [MoonSharp][MoonSharp]
+[ImGui.NET][ImGui.NET] is used. And finally, to make things easier to write, the
+script language Lua in a sandbox environment with the [MoonSharp][MoonSharp]
 interpreter is used. All ImGui or Quaver related functions and structures that
 work in Lua have already been implemented in C#, which is why the existing
 Quaver C# code is basically the documentation. All functions that derive from
@@ -115,15 +115,15 @@ I have compiled them in this guide at the end in the
 
 ### Semicolons
 
-Semicolons are optional in lua. You can decide to use them, or you can decide
-to leave them out. I will leave them out for all code examples. You can put
+Semicolons are optional in lua. You can decide to use them, or you can decide to
+leave them out. I will leave them out for all code examples. You can put
 multiple statements into a single line if you use semicolons so separate them.
 
 ### if and for
 
 When coming from a different programming language, it's very easy to forget the
-"`then`" keyword at the end of the if-condition. The correct form of the if-statement
-is
+"`then`" keyword at the end of the if-condition. The correct form of the
+if-statement is
 
 ```lua
 if condition then
@@ -156,8 +156,8 @@ term before. It describes the persistance of a variable after the end of the
 containing function or structure.
 
 Lua's variables are global by default when you declare them as is. They are
-accessible from any function calling the containing scope. So following
-code would work.
+accessible from any function calling the containing scope. So following code
+would work.
 
 ```lua
 function draw()
@@ -183,16 +183,17 @@ You can explicitly define a block with `do ... end`.
 
 Constants aren't a thing in lua and the workaround is more effort for what it's
 worth, so I recommend just sticking to UPPER_SNAKE_CASE naming for your
-variables, since that's the most common way to write variable names for constants.
+variables, since that's the most common way to write variable names for
+constants.
 
 ### Arrays/Lists/Tables
 
 There aren't any arrays/lists in Lua, only tables. A table is essentially a
 dictionary, and it can be used like a normal array by assigning a number as the
 key for the dictionary. It does this by default. You initialize a table with
-`myTable = {}`. Add more elements to the table with `table.insert(myTable, myVariable)`.
-Access table elements with `myTable[key]`, where key can be of any type. You can also
-access them with `myTable.key`.
+`myTable = {}`. Add more elements to the table with
+`table.insert(myTable, myVariable)`. Access table elements with `myTable[key]`,
+where key can be of any type. You can also access them with `myTable.key`.
 
 Important: Take note that everything in Lua is indexed from 1, not 0!
 
@@ -225,16 +226,16 @@ GUI (RMGUI). This is not exactly the case with IMGUI.
 
 A RMGUI creates the GUI once and changes the affected elements depending on the
 user actions. It saves the state between each frame and knows which elements it
-doesn't have to rerender. An IMGUI "creates" the GUI every frame and doesn't save
-the state (refer to the next section). Everything is redrawn every frame.
+doesn't have to rerender. An IMGUI "creates" the GUI every frame and doesn't
+save the state (refer to the next section). Everything is redrawn every frame.
 <sup>1</sup>
 
 The advantage that IMGUI has over RMGUI is that all of the rendering, the
-callbacks, the data transfers and everything, is managed by the library.
-While in RMGUI you might have to first create a button, create a callback,
-assign that callback to the button, add the button to the frame and then render
-the frame, in IMGUI you can simply create a button and then check the value of
-that button with, for example, an if statement to evaluate.
+callbacks, the data transfers and everything, is managed by the library. While
+in RMGUI you might have to first create a button, create a callback, assign that
+callback to the button, add the button to the frame and then render the frame,
+in IMGUI you can simply create a button and then check the value of that button
+with, for example, an if statement to evaluate.
 
 You don't have to worry about any adding. Any frame management. No callbacks.
 And that's the system we are using with [Dear ImGui][ImGui].
@@ -246,18 +247,18 @@ Refer to: [Retained Mode Versus Immediate Mode](https://docs.microsoft.com/en-us
 ### State variables
 
 Referring to [IMGUI](#immediate-mode-gui-imgui), the plugin is rerendered every
-frame. This also means, that all variables in the plugin are cleared every frame.
-The way GUI elements here work, is that they are fed a value to display and then
-a value is spit out whenever the user changes that element. But how does the
-plugin know which value to initially display? Or where does the plugin save the
-value?
+frame. This also means, that all variables in the plugin are cleared every
+frame. The way GUI elements here work, is that they are fed a value to display
+and then a value is spit out whenever the user changes that element. But how
+does the plugin know which value to initially display? Or where does the plugin
+save the value?
 
 We need a way to save the values across frames.
 
-This is done by using the provided `state` object. First you retrieve
-the value from the `state` object, you do your calculations and then it's saved
-to the state object again. Following function increments the variable `n` by
-1 on every frame.
+This is done by using the provided `state` object. First you retrieve the value
+from the `state` object, you do your calculations and then it's saved to the
+state object again. Following function increments the variable `n` by 1 on every
+frame.
 
 ```lua
 function draw()
@@ -296,8 +297,8 @@ have the console available, it's possible to print to the console using
 `print()` in Lua. Or you can write the content of a variable into a
 `imgui.TextWrapped()` in the plugin. It's up to you.
 
-If you're testing an algorithm, I don't recommend testing that algorithm in
-an actual plugin. Do it in an actual Lua interpreter. Go on a website if you will.
+If you're testing an algorithm, I don't recommend testing that algorithm in an
+actual plugin. Do it in an actual Lua interpreter. Go on a website if you will.
 
 I made a
 [plugin](https://gist.github.com/IceDynamix/2269f6f486752413eb987b741454d029)
@@ -325,8 +326,8 @@ end
 ```
 
 First of all, Quaver always looks for the `draw()` function and goes on from
-there. This is different to what one would expect, where a `main()` function
-is the entry point. Looking at the output, we can see that a window with a title
+there. This is different to what one would expect, where a `main()` function is
+the entry point. Looking at the output, we can see that a window with a title
 has popped up in the editor. As you can already guess, you can make a window
 with the `imgui.Begin()` and the `imgui.End()` functions.
 
@@ -361,9 +362,9 @@ end
 
 ### Integer input box
 
-There's a lot of different elements you can implement, check out
-the [ImGuiWrapper.cs][Quaver/ImGuiWrapper.cs] to know what can or what can't
-be added.
+There's a lot of different elements you can implement, check out the
+[ImGuiWrapper.cs][Quaver/ImGuiWrapper.cs] to know what can or what can't be
+added.
 
 Let's take this as an example:
 
@@ -373,10 +374,10 @@ public static bool InputInt(string label, ref int v) => ImGui.InputInt(label, re
 
 The only important part is `InputInt(string label, ref int v)`. Looking at the
 code, we can see something weird with the function; it uses a `ref` parameter
-(which is basically a pointer). Lua doesn't exactly work with ref parameters,
-so it needs a different way to express that relation in the code. If you don't
-care about the details, then this is what you would need to do to get an
-integer text box:
+(which is basically a pointer). Lua doesn't exactly work with ref parameters, so
+it needs a different way to express that relation in the code. If you don't care
+about the details, then this is what you would need to do to get an integer text
+box:
 
 ```lua
 function draw()
@@ -394,12 +395,12 @@ function get(identifier, defaultValue)
 end
 ```
 
-If you *do* care about the details of why it's handled in Lua this way, check out
-[this](http://www.moonsharp.org/objects.html#byref).
+If you *do* care about the details of why it's handled in Lua this way, check
+out [this](http://www.moonsharp.org/objects.html#byref).
 
-Since the first return value of the `InputInt()` function isn't important to
-us, we can use any short variable name to make life easier for us. It's common
-to use an underscore for any irrelevant values. We can also write the new value
+Since the first return value of the `InputInt()` function isn't important to us,
+we can use any short variable name to make life easier for us. It's common to
+use an underscore for any irrelevant values. We can also write the new value
 back into the old variable, so there's no need to create a new one.
 
 ```lua
@@ -436,10 +437,11 @@ InputInt(string label, ref int v, int step, int step_fast, ImGuiInputTextFlags f
 ```
 
 Feel free to play around with the different parameters! In case you want to use
-the input flags in the last function, take a look at [ImGui Enums](#imgui-enums)
-and check, which one you need to use. The documentation for the enums themselves
-can be found either in the [ImGui.NET/C#_Enums][ImGui.NET/C#_Enums] or directly
-in the [ImGui/C_Enums][ImGui/C_Enums]
+the input flags in the last function, take a look at
+[ImGui Enums](#imgui-enums) and check, which one you need to use. The
+documentation for the enums themselves can be found either in the
+[ImGui.NET/C#_Enums][ImGui.NET/C#_Enums] or directly in the
+[ImGui/C_Enums][ImGui/C_Enums]
 
 ### Any input element
 
@@ -451,8 +453,8 @@ InputText(string label, ref string input, uint maxLength)
 ```
 
 The only difference to the `InputInt()` function is the new parameter, which
-requires you to provide a maximum length of the input string. The example uses
-a limit of 50 characters.
+requires you to provide a maximum length of the input string. The example uses a
+limit of 50 characters.
 
 ```lua
 -- Make sure to skip the `local` keyword when declaring a "constant"
@@ -469,8 +471,8 @@ function draw()
 end
 ```
 
-It *would* be best to define a constant for it... if only constants were a
-thing in Lua. Refer to [Constants](#constants).
+It *would* be best to define a constant for it... if only constants were a thing
+in Lua. Refer to [Constants](#constants).
 
 Again, check out the [Quaver/ImGuiWrapper.cs][Quaver/ImGuiWrapper.cs] for all
 possible input values. You should be able to figure everything out by now. Try
@@ -483,10 +485,10 @@ thinking about how you would go on about making a checkbox or an integer slider!
 
 ### Buttons
 
-A button in Lua is as simple as `imgui.Button(label)`. Checking the state of
-the button (pressed/not pressed) is done by checking the value (a boolean) of
-the button itself. This example prints out "Hello World!" to the console when
-you press the button.
+A button in Lua is as simple as `imgui.Button(label)`. Checking the state of the
+button (pressed/not pressed) is done by checking the value (a boolean) of the
+button itself. This example prints out "Hello World!" to the console when you
+press the button.
 
 ```lua
 local myButton = imgui.Button("Hello?")
@@ -514,13 +516,14 @@ void PlotLines(string label, ref float values, int values_count)
 ```
 
 Right. Why is `values` a float reference when it should actually be a float[]
-reference? Refer to [issue #105](https://github.com/mellinoe/ImGui.NET/issues/105)
-on the ImGui.NET repository. But now is the question... How do you actually
-make a plot in Lua now? Lua doesn't really do references.
+reference? Refer to
+[issue #105](https://github.com/mellinoe/ImGui.NET/issues/105) on the ImGui.NET
+repository. But now is the question... How do you actually make a plot in Lua
+now? Lua doesn't really do references.
 
 That's where I took matters into my own hands. I rewrote the
-[Quaver ImGuiWrapper][Quaver/ImGuiWrapper.cs] to make it take an array. This
-is how it is currently implemented, after merging
+[Quaver ImGuiWrapper][Quaver/ImGuiWrapper.cs] to make it take an array. This is
+how it is currently implemented, after merging
 [my pull request](https://github.com/Quaver/Quaver/pull/1985):
 
 ```cs
@@ -585,11 +588,12 @@ function draw()
 end
 ```
 
-Everything seen in the demo window can (probably) be realized in a Quaver
-plugin as well. The source code for the demo window can be found at
+Everything seen in the demo window can (probably) be realized in a Quaver plugin
+as well. The source code for the demo window can be found at
 [ImGui/imgui_demo.cpp][ImGui/imgui_demo.cpp]. Just apply different syntax
-(`imgui.Function()` instead of `ImGui::Function()`) and apply pointers/addresses/ref
-parameters as seen in [Creating an integer input box](#creating-an-integer-input-box).
+(`imgui.Function()` instead of `ImGui::Function()`) and apply
+pointers/addresses/ref parameters as seen in
+[Creating an integer input box](#creating-an-integer-input-box).
 
 ### Styling
 
@@ -603,8 +607,8 @@ end
 ```
 
 Anything you change in the style editor will apply to all currently loaded
-plugins. Feel free to bring up the demo window with `imgui.ShowDemoWindow()`
-and check out how everything looks.
+plugins. Feel free to bring up the demo window with `imgui.ShowDemoWindow()` and
+check out how everything looks.
 
 There are two importants sections, sizes and colors. You won't be able to change
 the font, so don't bother. Now, to apply the styles to your plugin you have to
@@ -662,11 +666,11 @@ imgui.PushStyleVar(imgui_style_var.WindowPadding, { 20, 20 })
 
 ![Style editor colors panel](img/style_colors.png)
 
-You can change the color with a color picker upon clicking on the colored
-square next to the color element. After you're done adjusting, you can export
-the colors to your clipboard with the button near the top called "Export
-Unsaved" (refer to image). The checkbox is optional, unselecting it will color
-all colors, including the default ones. The copied colors will look like this:
+You can change the color with a color picker upon clicking on the colored square
+next to the color element. After you're done adjusting, you can export the
+colors to your clipboard with the button near the top called "Export Unsaved"
+(refer to image). The checkbox is optional, unselecting it will color all
+colors, including the default ones. The copied colors will look like this:
 
 ```cpp
 ImVec4* colors = ImGui::GetStyle().Colors;
@@ -677,9 +681,9 @@ colors[ImGuiCol_TitleBgActive]          = ImVec4(0.16f, 0.19f, 0.23f, 1.00f);
 colors[ImGuiCol_Tab]                    = ImVec4(0.63f, 0.67f, 0.72f, 0.86f);
 ```
 
-Now of course, this is C++ code, and we can't just copy that into our Lua script.
-We also can't directly edit the style colors like shown, we have to rely on
-pushing/popping colors instead. So each line you get in the style of:
+Now of course, this is C++ code, and we can't just copy that into our Lua
+script. We also can't directly edit the style colors like shown, we have to rely
+on pushing/popping colors instead. So each line you get in the style of:
 
 ```cpp
 colors[ImGuiCol_Element] = ImVec4(0.10f, 0.20f, 0.30f, 0.40f);
@@ -735,7 +739,8 @@ Remember:
 -- This is an example for a single hitobject.
 
 -- Note at the current editor position in lane 1
--- You would place a long note by specifiying an end time, refer to section Utilities
+-- You would place a long note by specifiying an end time, refer to
+-- section Utilities
 obj = utils.CreateHitObject(1, state.SongTime)
 actions.PlaceHitObject(obj)
 
@@ -774,8 +779,8 @@ actions.PlaceScrollVelocityBatch(svList)
 
 ### State variable management
 
-There are a few ways to go about this. One would be to use wrapper functions like
-this, every time we want to set up a new variable to use.
+There are a few ways to go about this. One would be to use wrapper functions
+like this, every time we want to set up a new variable to use.
 
 ```lua
 function draw()
@@ -833,20 +838,22 @@ end
 Every time you want to set up a new scope you want your variables to reside in
 (usually separate menus), you need to define a menu ID (to prevent other menus
 with identical variable names) and a variables (vars) table. The variables table
-is filled with the variables you want to define, along with their default values.
+is filled with the variables you want to define, along with their default
+values.
 
 You call the `retrieveStateVariables()` function once after defining your vars
-table. You do your calculations and call the `saveStateVariables()` function once
-at the end of your scope. Now you only need to worry about your menu IDs being
-different.
+table. You do your calculations and call the `saveStateVariables()` function
+once at the end of your scope. Now you only need to worry about your menu IDs
+being different.
 
 If you want to track create a new state variable, all you need to do is create
-another element in the vars table. Your intelligent editor with IntelliSense will
-also provide autocompletion as soon as you type `vars.`.
+another element in the vars table. Your intelligent editor with IntelliSense
+will also provide autocompletion as soon as you type `vars.`.
 
 ### Module management
 
-Remember in [A few things you can't do with plugins](#a-few-things-you-cant-do-with-plugins),
+Remember in
+[A few things you can't do with plugins](#a-few-things-you-cant-do-with-plugins),
 when I told you you can't use a multifile structure? Next best thing you can do
 is simulate module behavior. Let's take the code example from the section above:
 
@@ -869,8 +876,8 @@ would be
 When you put functions or variables into different files/modules, all you're
 really doing is defining a table with value and function assignments in another
 file, so in the end you can call your functions like `menu.example()` or
-`utilities.retrieveStateVariables()`. But if a module is just defining functions and
-values for a table, then that can be done in a single file as well!
+`utilities.retrieveStateVariables()`. But if a module is just defining functions
+and values for a table, then that can be done in a single file as well!
 
 ```lua
 menu = {}
@@ -925,8 +932,8 @@ though:
 - Append all files in the directory to the created file
 
 I'm using this system in my personal project [iceSV][iceSV] and use Python for
-it. Feel free to look at `compile.py` and the output `plugin.lua`. There are
-a few pros and cons to this.
+it. Feel free to look at `compile.py` and the output `plugin.lua`. There are a
+few pros and cons to this.
 
 Pros:
 
@@ -973,8 +980,8 @@ _, vars = imgui.DragFloat4("label", vars)
 n4,n1,n2,n3 = vars
 ```
 
-I know, it's weird. But there isn't really anything you can do about it.
-I assume it's got something to do with how Lua table indexing starts at 1.
+I know, it's weird. But there isn't really anything you can do about it. I
+assume it's got something to do with how Lua table indexing starts at 1.
 
 ### Vector2/3/4 Datatypes
 
@@ -1074,10 +1081,10 @@ Accessible via `map.attribute`.
 
 ### Editor Actions
 
-Accessible via `actions.function()`. Reminder: Any place/remove function
-needs to be called in Lua with an object created by the appropriate
-[utility](#utilities) function\! Refer to: [Interacting with the editor
-and maps](#interact-with-the-editor-and-maps)
+Accessible via `actions.function()`. Reminder: Any place/remove function needs
+to be called in Lua with an object created by the appropriate
+[utility](#utilities) function\! Refer to: [Interacting with the editor and
+maps](#interact-with-the-editor-and-maps)
 
 <!-- insertClassMethods, Quaver/Quaver.Shared/Screens/Edit/Actions/EditorActionManager.cs-->
 
