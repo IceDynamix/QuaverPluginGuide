@@ -1353,7 +1353,7 @@ SliderVelocityInfo CreateScrollVelocity(float time, float multiplier);
 
 HitObjectInfo CreateHitObject(int startTime, int lane, int endTime = 0, HitSounds hitsounds = 0);
 
-TimingPointInfo CreateTimingPoint(int startTime, int bpm, TimeSignature signature = TimeSignature.Quadruple);
+TimingPointInfo CreateTimingPoint(float startTime, float bpm, TimeSignature signature = TimeSignature.Quadruple);
 
 // Converts milliseconds to the appropriate mm:ss:ms time
 string MillisecondsToTime(float time);
