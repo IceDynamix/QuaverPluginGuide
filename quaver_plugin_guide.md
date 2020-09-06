@@ -329,6 +329,10 @@ I made a
 [plugin](https://gist.github.com/IceDynamix/2269f6f486752413eb987b741454d029)
 that displays all state/map variables for debugging purposes.
 
+Lastly, it’s important to mention that `pcall()` (protected call,
+essentially a try-block) and `xpcall()` (executes a callback function if
+the function errors) do not work right now.
+
 ### Useful links
 
   - [Quaver Github](https://github.com/Quaver)
