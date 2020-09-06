@@ -1260,7 +1260,7 @@ and maps](#interact-with-the-editor-and-maps)
 // Quaver/Quaver.Shared/Screens/Edit/Actions/EditorActionManager.cs
 
 // Detects if the user has made changes to the map before saving.
-bool HasUnsavedChanges => UndoStack.Count != 0  && UndoStack.Peek() != LastSaveAction || UndoStack.Count == 0 && LastSaveAction != null;;
+bool HasUnsavedChanges => UndoStack.Count != 0 && UndoStack.Peek() != LastSaveAction || UndoStack.Count == 0 && LastSaveAction != null;;
 
 // Performs a given action for the editor to take.
 void Perform(IEditorAction action);
@@ -1329,6 +1329,8 @@ void ChangeTimingPointOffsetBatch(List<TimingPointInfo> tps, float offset);
 void ResetTimingPoint(TimingPointInfo tp);
 
 void GoToObjects(string input);
+
+void SetHitObjectSelection(List<HitObjectInfo> hitObjects);
 
 // Detects the BPM of the map and returns the object instance
 EditorBpmDetector DetectBpm();
