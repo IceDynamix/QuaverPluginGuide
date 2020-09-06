@@ -194,6 +194,22 @@ what you’re doing.
 
 You can explicitly define a block with `do ... end`.
 
+Another thing to note is that you can define global variables to use,
+but only if you don’t assign any script related variable to them
+(includes anything that isn’t available in vanilla Lua by default),
+since the script variables are only initialized in the `draw()`
+function.
+
+``` lua
+thisGlobalVarWorks = 5
+thisGlobalVarDoesntWork = #map.HitObjects -- number of hitobjects
+
+function example()
+    print(thisGlobalVarWorks) -- works
+    print(thisGlobalVarDoesntWork) -- doesn't work
+end
+```
+
 ### Constants
 
 Constants aren’t a thing in lua and the workaround is more effort for
