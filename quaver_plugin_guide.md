@@ -31,6 +31,7 @@
           - [Plots](#plots)
               - [Pushing and popping](#pushing-and-popping)
           - [More UI elements](#more-ui-elements)
+          - [Keypresses](#keypresses)
           - [Styling](#styling)
               - [Plugin Sizes](#plugin-sizes)
               - [Plugin Colors](#plugin-colors)
@@ -648,6 +649,51 @@ at
 Just apply different syntax (`imgui.Function()` instead of
 `ImGui::Function()`) and apply pointers/addresses/ref parameters as seen
 in [Creating an integer input box](#creating-an-integer-input-box).
+
+### Keypresses
+
+You can detect keypresses with plugins, which can allow you to make
+assign all kinds of custom keybinds to your favorite actions\! This is
+achieved by using these utility functions:
+
+``` cs
+// Only returns true on the exact frame the key was pressed/releaseed
+bool IsKeyPressed(Keys k);
+bool IsKeyReleased(Keys k);
+// Always returns true as long as the key is (not) held
+bool IsKeyDown(Keys k);
+bool IsKeyUp(Keys k);
+```
+
+The keys are specified with the [MonoGame.Framework.Input.Keys
+enum](https://github.com/Quaver/MonoGame/blob/latest-develop/MonoGame.Framework/Input/Keys.cs),
+which can be accessed in the script with `keys.Tab` as an example.
+
+``` lua
+if utils.IsKeyDown(keys.Space) then
+    imgui.Text("Space is pressed!")
+else
+    imgui.Text("Space is not pressed!")
+end
+```
+
+For key combinations involving modifier keys to work as traditionally
+(hold modifier and press next key), you need to use `utils.IsKeyDown()`
+for the modifier and `utils.IsKeyPressed()` for the key. Otherwise you’d
+have to hit both keys at the exact same frame. Here is an example to
+make Ctrl+K/L move the current time forward/back by 1 second:
+
+``` lua
+if utils.IsKeyDown(keys.LeftControl) and utils.IsKeyPressed(keys.L) then
+    actions.GoToObjects(state.SongTime + 1000)
+elseif utils.IsKeyDown(keys.LeftControl) and utils.IsKeyPressed(keys.K) then
+    actions.GoToObjects(state.SongTime - 1000)
+end
+```
+
+Keep in mind that keybinds don’t require any interface\! You could just
+as well put the above code into the draw() without a imgui.Begin()/End()
+environment and it would still work as intended.
 
 ### Styling
 
