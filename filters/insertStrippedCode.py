@@ -14,13 +14,14 @@ def prepare(doc):
     reExcludeNonVisible = r"(?<!\[MoonSharpVisible\(false\)\]\n)"
     reVisibility = r"(?P<visibility>public|private|protected)(?(visibility) |)"
     reStatic = r"(?P<static>static)?(?(static) |)"
+    reOverride = r"(?P<override>override)?(?(override) |)"
     reMethod = r"(?P<method>[\w]+ [\w]+(?:\(.*?\)| =>.*))"
     reEnum = r"(?P<enum>enum \w+)"
     reAttribute = r"(?!class)(?!sealed)(?P<attribute>[\w<>]+ \w+)"
     reCurlyBrackets = r"(?:(?:\n(?P<indent>^ +)| ){(?P<curlyContent>(?(indent)[\s\S]*?^(?P=indent)|.*))})?"
 
     regex = reSummary + reExcludeNonVisible + r"^\s+" + reVisibility + \
-        reStatic + r"(?:" + "|".join([reMethod, reEnum, reAttribute]) + r")" + \
+        reStatic + reOverride + r"(?:" + "|".join([reMethod, reEnum, reAttribute]) + r")" + \
         reCurlyBrackets
 
     doc.regex = re.compile(regex, re.MULTILINE)
