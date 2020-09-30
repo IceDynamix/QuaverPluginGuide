@@ -32,6 +32,7 @@
               - [Pushing and popping](#pushing-and-popping)
           - [More UI elements](#more-ui-elements)
           - [Keypresses](#keypresses)
+          - [Drawing](#drawing)
           - [Styling](#styling)
               - [Plugin Sizes](#plugin-sizes)
               - [Plugin Colors](#plugin-colors)
@@ -213,7 +214,7 @@ end
 
 ### Constants
 
-Constants aren’t a thing in lua and the workaround is more effort for
+Constants aren’t a thing in Lua and the workaround is more effort for
 what it’s worth, so I recommend just sticking to UPPER\_SNAKE\_CASE
 naming for your variables, since that’s the most common way to write
 variable names for constants.
@@ -264,7 +265,7 @@ A RMGUI creates the GUI once and changes the affected elements depending
 on the user actions. It saves the state between each frame and knows
 which elements it doesn’t have to rerender. An IMGUI “creates” the GUI
 every frame and doesn’t save the state (refer to the next section).
-Everything is redrawn every frame. <sup>1</sup>
+Everything is redrawn every frame. (This part is very simplified.)
 
 The advantage that IMGUI has over RMGUI is that all of the rendering,
 the callbacks, the data transfers and everything, is managed by the
@@ -280,8 +281,6 @@ ImGui](https://github.com/ocornut/imgui).
 
 Refer to: [Retained Mode Versus Immediate
 Mode](https://docs.microsoft.com/en-us/windows/win32/learnwin32/retained-mode-versus-immediate-mode)
-
-<sup>1</sup> This part is pretty simplified.
 
 ### State variables
 
@@ -695,6 +694,10 @@ Keep in mind that keybinds don’t require any interface\! You could just
 as well put the above code into the draw() without a imgui.Begin()/End()
 environment and it would still work as intended.
 
+### Drawing
+
+<!-- TODO -->
+
 ### Styling
 
 Following code will bring up the style editor, where you can experiment
@@ -706,8 +709,8 @@ function draw()
 end
 ```
 
-Anything you change in the style editor will apply to all currently
-loaded plugins. Feel free to bring up the demo window with
+Anything you change in the style editor will apply to all windows in the
+plugin. Feel free to bring up the demo window with
 `imgui.ShowDemoWindow()` and check out how everything looks.
 
 There are two importants sections, sizes and colors. You won’t be able
@@ -718,39 +721,7 @@ plugin you have to do following.
 
 ![Style editor sizes panel](img/style_sizes.png)
 
-Until the `imgui_style_var` enum is implemented, copy and paste this
-into your code. When this gets implemented, feel free to delete the
-table.
-
-``` lua
-imgui_style_var = {
-    Alpha = 0,
-    WindowPadding = 1,
-    WindowRounding = 2,
-    WindowBorderSize = 3,
-    WindowMinSize = 4,
-    WindowTitleAlign = 5,
-    ChildRounding = 6,
-    ChildBorderSize = 7,
-    PopupRounding = 8,
-    PopupBorderSize = 9,
-    FramePadding = 10,
-    FrameRounding = 11,
-    FrameBorderSize = 12,
-    ItemSpacing = 13,
-    ItemInnerSpacing = 14,
-    IndentSpacing = 15,
-    ScrollbarSize = 16,
-    ScrollbarRounding = 17,
-    GrabMinSize = 18,
-    GrabRounding = 19,
-    TabRounding = 20,
-    ButtonTextAlign = 21,
-    COUNT = 22
-}
-```
-
-After doing that, you can apply new sizes with this:
+You can apply new sizes with this:
 
 ``` lua
 imgui.PushStyleVar(imgui_style_var.property, value)
@@ -810,8 +781,8 @@ everything into a directory in your plugins folder.
 Make sure to check out the [available resources](#available-resources)
 to see which values you can access\! The common workflow for placing any
 kind of object is going to be **converting values into an object with an
-utility function and then placing them with the according action
-function**.
+utility function and then placing/removing them with the according
+action function**.
 
 Remember:
 
@@ -823,7 +794,7 @@ Remember:
   - [Object](#quaver-structures)
       - [Utility](#utilities) function
       - [Action](#editor-actions) function
-      - [ActionBatch](#editor-actions) batch function
+      - [ActionBatch](#editor-actions) function
   - HitObject
       - `utils.CreateHitObject()`
       - `action.PlaceHitObject(obj)`
@@ -842,7 +813,7 @@ Remember:
 ``` lua
 -- This is an example for a single hitobject.
 
--- Note at the current editor position in lane 1
+-- Place a note at the current editor position in lane 1
 -- You would place a long note by specifiying an end time, refer to
 -- section Utilities
 obj = utils.CreateHitObject(1, state.SongTime)
@@ -1171,8 +1142,6 @@ The PascalCase name is simply converted into a snake\_case variant.
 | `ImGuiColorEditFlags`  | `imgui_color_edit_flags` |
 | `ImGuiCol`             | `imgui_col`              |
 
-Note: ImGuiStyleVar is not implemented yet, will come at a later date.
-
 In-depth structure of enums can be found in
 [ImGui.NET/C\#\_Enums](https://github.com/mellinoe/ImGui.NET/tree/master/src/ImGui.NET/Generated)
 and in
@@ -1248,13 +1217,19 @@ Accessible via `state.attribute`.
 // Quaver/Quaver.Shared/Screens/Edit/Plugins/EditorPluginState.cs
 
 // The current time in the song
-int SongTime { get; [MoonSharpVisible(false)] set; }
+double SongTime { get; [MoonSharpVisible(false)] set; }
 
 // The objects that are currently selected by the user
 List<HitObjectInfo> SelectedHitObjects { get; [MoonSharpVisible(false)] set; }
 
 // The current timing point in the map
 TimingPointInfo CurrentTimingPoint { get; [MoonSharpVisible(false)] set; }
+
+// The currently selected editor layer
+EditorLayerInfo CurrentLayer { get; [MoonSharpVisible(false)] set; }
+
+// The currently selected beat snap
+int CurrentSnap { get; [MoonSharpVisible(false)] set; }
 ```
 
 ``` cs
@@ -1267,6 +1242,9 @@ double DeltaTime { get; set; }
 long UnixTime { get; set; }
 
 bool IsWindowHovered { get; set; }
+
+// Width and height of the current Quaver window
+Vector2 WindowSize { get; set; }
 ```
 
 ``` cs
@@ -1289,6 +1267,9 @@ Accessible via `map.attribute`.
 // The game mode of the map
 GameMode Mode { get; [MoonSharpVisible(false)] set; }
 
+// If the scroll velocities are in normalized format (BPM does not affect scroll velocity).
+bool Normalized { get; [MoonSharpVisible(false)] set; }
+
 // The slider velocities present in the map
 List<SliderVelocityInfo> ScrollVelocities { get; [MoonSharpVisible(false)] set; }
 
@@ -1297,10 +1278,23 @@ List<HitObjectInfo> HitObjects { get; [MoonSharpVisible(false)] set; }
 
 // The timing points that are currently in the map
 List<TimingPointInfo> TimingPoints { get; [MoonSharpVisible(false)] set; }
+
+// The non-default editor layers that are currently in the map
+List<EditorLayerInfo> EditorLayers { get; [MoonSharpVisible(false)] set; }
+
+// The default editor layer
+EditorLayerInfo DefaultLayer { get; [MoonSharpVisible(false)] set; }
+
+// Total mp3 length
+double TrackLength { get; [MoonSharpVisible(false)] set; }
 ```
 
 ``` cs
 // Quaver/Quaver.Shared/Screens/Edit/Plugins/EditorPluginMap.cs
+
+string ToString();
+
+int GetKeyCount(bool includeScratch = true);
 
 // Finds the most common BPM in the current map
 float GetCommonBpm();
@@ -1313,6 +1307,9 @@ SliderVelocityInfo GetScrollVelocityAt(double time);
 
 // Finds the length of a timing point.
 double GetTimingPointLength(TimingPointInfo point);
+
+// Gets the nearest snap time at a time to a given direction.
+double GetNearestSnapTimeFromTime(bool forwards, int snap, float time);
 ```
 
 ### Editor Actions
@@ -1394,9 +1391,30 @@ void ChangeTimingPointOffsetBatch(List<TimingPointInfo> tps, float offset);
 // Resets a timing point back to zero
 void ResetTimingPoint(TimingPointInfo tp);
 
+// Adds an editor layer to the map
+void CreateLayer(EditorLayerInfo layer);
+
+// Removes a non-default editor layer from the map
+void RemoveLayer(EditorLayerInfo layer);
+
+// Changes the name of a non-default editor layer
+void RenameLayer(EditorLayerInfo layer, string name);
+
+// Changes the editor layer of existing hitobjects
+void MoveHitObjectsToLayer(EditorLayerInfo layer, List<HitObjectInfo> hitObjects);
+
+// Changes the color of a non-default editor layer
+void ChangeLayerColor(EditorLayerInfo layer, Color color);
+
+// Toggles the visibility of an existing editor layer
+void ToggleLayerVisibility(EditorLayerInfo layer);
+
 void GoToObjects(string input);
 
 void SetHitObjectSelection(List<HitObjectInfo> hitObjects);
+
+// Resnaps all notes in a given map to the closest of the specified snaps in the list.
+void ResnapAllNotes(List<int> snaps, List<HitObjectInfo> hitObjectsToResnap);
 
 // Detects the BPM of the map and returns the object instance
 EditorBpmDetector DetectBpm();
@@ -1419,14 +1437,14 @@ for more information on the returned objects.
 
 SliderVelocityInfo CreateScrollVelocity(float time, float multiplier);
 
-HitObjectInfo CreateHitObject(int startTime, int lane, int endTime = 0, HitSounds hitsounds = 0);
+HitObjectInfo CreateHitObject(int startTime, int lane, int endTime = 0, HitSounds hitsounds = 0, int editorLayer = 0);
 
 TimingPointInfo CreateTimingPoint(float startTime, float bpm, TimeSignature signature = TimeSignature.Quadruple);
 
+EditorLayerInfo CreateEditorLayer(string name, bool hidden = false, string colorRgb = null);
+
 // Converts milliseconds to the appropriate mm:ss:ms time
 string MillisecondsToTime(float time);
-
-void OpenUrl(string url, bool forceNormalBrowser = false);
 
 bool IsKeyPressed(Keys k);
 
