@@ -41,6 +41,7 @@
         - [State variable management](#state-variable-management)
         - [Module management](#module-management)
         - [Using an actual multi-file structure](#using-an-actual-multi-file-structure)
+        - [Intellisense](#intellisense)
     - [Noteworthy findings](#noteworthy-findings)
         - [Instant plugin update](#instant-plugin-update)
         - [Slider/Drag Int/Float 4 types](#sliderdrag-intfloat-4-types)
@@ -1013,6 +1014,18 @@ Cons:
   for me)
     - I made a AutoHotkey script that runs the `compile.py` when I press F6
 - User has to download a lot more files when pulling with Git
+
+### Intellisense
+
+The most frustrating part of making Editor plugins is having no autocomplete for
+any of the global constants (like state, map, actions etc.) and thus having to
+rely on the guide or the source code to find what you need. I remedied that
+issue by automatically generating a file that contains all of a constants
+available values and functions and keeping that file in my workspace. I'm using
+Visual Studio Code with the `sumneko.lua` extension, which picks up the
+intellisense file in the workspace to use as available functions and values in
+other Lua files. You can find the repository for that intellisense file
+[here](https://github.com/IceDynamix/QuaverPluginIntellisense).
 
 ## Noteworthy findings
 
