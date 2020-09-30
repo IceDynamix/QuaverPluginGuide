@@ -17,7 +17,7 @@
         - [Pass by value/reference](#pass-by-valuereference)
         - [Immediate Mode GUI (IMGUI)](#immediate-mode-gui-imgui)
         - [State variables](#state-variables)
-        - [A few things you can't do with plugins](#a-few-things-you-cant-do-with-plugins)
+        - [MoonSharp Core Modules](#moonsharp-core-modules)
         - [Debugging](#debugging)
         - [Useful links](#useful-links)
     - [Making a plugin](#making-a-plugin)
@@ -292,7 +292,34 @@ function draw()
 end
 ```
 
-### A few things you can't do with plugins
+### MoonSharp Core Modules
+
+The reason Lua was chosen as the script language was because it is easy to
+create a sandboxed system for it. Quaver uses such a sandboxed system to make
+sure that nothing malicious can be done with plugins. The list of different core
+modules can be found
+[here](https://github.com/moonsharp-devs/moonsharp/blob/master/src/MoonSharp.Interpreter/Modules/CoreModules.cs),
+Quaver currently uses the HardSandbox presets, which includes:
+
+- `GlobalConsts`, the global constants `_G`, `_VERSION` and `_MOONSHARP`
+- `Basic`, includes `assert`, `collectgarbage`, `error`, `print`, `select`, `type`, `tonumber` and `tostring`
+- `TableIterators`, the table iterators `next`, `ipairs` and `pairs`
+- `String`, the [string package](https://www.lua.org/manual/5.2/manual.html#6.4)
+- `Table`, tables and the [table package](https://www.lua.org/manual/5.2/manual.html#6.5) functions
+- `Math`, the [math package](https://www.lua.org/manual/5.2/manual.html#6.6)
+- `Bit32`, the [bit32 package](https://www.lua.org/manual/5.2/manual.html#6.7)
+
+Following modules are disabled in Quaver:
+
+- `Metatables`, the metatable methods `setmetatable`, `getmetatable`, `rawset`, `rawget`, `rawequal` and `rawlen`
+- `ErrorHandling`, the error handling methods `pcall` and `xpcall`
+- `Coroutine`, the [coroutine package](https://www.lua.org/manual/5.2/manual.html#6.2)
+- `OS_Time`, the time methods of the [os package](https://www.lua.org/manual/5.2/manual.html#6.9) `clock`, `difftime`, `date` and `time`
+- `LoadMethods`, the load methods `load`, `loadsafe`, `loadfile`, `loadfilesafe`, `dofile` and `require`
+- `OS_System`, the methods of [os package](https://www.lua.org/manual/5.2/manual.html#6.9) excluding those listed for OS_Time
+- `IO`, [io and file package](https://www.lua.org/manual/5.2/manual.html#6.8)
+
+This in turn means you can't:
 
 - Use a multi-file/module structure for your code
     - Everything has to be inside `plugin.lua`
