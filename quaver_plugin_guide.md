@@ -737,7 +737,68 @@ environment and it would still work as intended.
 
 ### Drawing
 
-<!-- TODO -->
+Plugin drawing was added in Quaver update `v0.25.0`.
+
+The basic principle of drawing in a plugin is getting the drawlist and
+calling functions from it.
+
+``` lua
+-- Draws a white circle near the top left corner
+function draw()
+    local drawlist = imgui.GetOverlayDrawList()
+    local position = {100, 100} -- Absolute coordinates, with top left being (0,0)
+    local radius = 10
+    local whiteColor = 16 ^ 8 - 1 -- Explained later
+    drawlist.AddCircleFilled(position, radius, whiteColor)
+end
+```
+
+There are two different drawlists, one is the overlay drawlist which
+allows you to draw anywhere on the screen, the other is the window
+drawlist which only renders objects drawn in the absolute coordinates of
+/ clipped by the current window. They are called with
+`imgui.GetOverlayDrawList()` and `imgui.GetWindowDrawList()`
+respectively. The overlay drawlist can be used without `imgui.Begin()`
+and `End()`.
+
+Every available drawlist function can be found
+[here](https://github.com/mellinoe/ImGui.NET/blob/master/src/ImGui.NET/Generated/ImDrawList.gen.cs#L71)
+and starts with “Add”. There is a “Add…Filled” for many of the objects
+available. You can’t use the image functions and `ImDrawCornerFlags`
+isn’t registered to use right now.
+
+Colors have to be provided as a number and the format is RGBA reversed,
+which looks like following if put as Lua code.
+
+``` lua
+function colorToUint(r, g, b, a)
+    return a*16^6 + b*16^4 + g*16^2 + r
+end
+```
+
+Trying to draw with absolute coordinates can be hard sometimes, since
+the screen size is variable and depends on the user. I added the current
+window size as `state.WindowSize` to be used along with it, it returns a
+table of two elements with the width and height of the current screen in
+that order. For example, if you want to draw an object in the middle of
+the screen, you can divide the screen sizes by 2 and use those as
+absolute coordinates.
+
+``` lua
+-- Draws a white circle in the center
+function draw()
+    local drawlist = imgui.GetOverlayDrawList()
+    local position = {state.WindowSize[1]*0.5, state.WindowSize[2]*0.5}
+    drawlist.AddCircleFilled(position, 10, 16^8 - 1)
+end
+```
+
+Having a drawing move relative to the window (for example having a
+drawing *in* a window) isn’t done by using the window drawlist, since
+the coordinates used there are still absolute from the top left corner
+of the screen. You can use `imgui.GetWindowPos()` with
+`imgui.GetWindowSize()` or use some of the other size functions to work
+with.
 
 ### Styling
 
