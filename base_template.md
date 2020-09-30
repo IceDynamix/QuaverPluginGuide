@@ -30,6 +30,7 @@
             - [Pushing and popping](#pushing-and-popping)
         - [More UI elements](#more-ui-elements)
         - [Keypresses](#keypresses)
+        - [Drawing](#drawing)
         - [Styling](#styling)
             - [Plugin Sizes](#plugin-sizes)
             - [Plugin Colors](#plugin-colors)
@@ -197,7 +198,7 @@ end
 
 ### Constants
 
-Constants aren't a thing in lua and the workaround is more effort for what it's
+Constants aren't a thing in Lua and the workaround is more effort for what it's
 worth, so I recommend just sticking to UPPER_SNAKE_CASE naming for your
 variables, since that's the most common way to write variable names for
 constants.
@@ -244,7 +245,7 @@ A RMGUI creates the GUI once and changes the affected elements depending on the
 user actions. It saves the state between each frame and knows which elements it
 doesn't have to rerender. An IMGUI "creates" the GUI every frame and doesn't
 save the state (refer to the next section). Everything is redrawn every frame.
-<sup>1</sup>
+(This part is very simplified.)
 
 The advantage that IMGUI has over RMGUI is that all of the rendering, the
 callbacks, the data transfers and everything, is managed by the library. While
@@ -257,8 +258,6 @@ You don't have to worry about any adding. Any frame management. No callbacks.
 And that's the system we are using with [Dear ImGui][ImGui].
 
 Refer to: [Retained Mode Versus Immediate Mode](https://docs.microsoft.com/en-us/windows/win32/learnwin32/retained-mode-versus-immediate-mode)
-
-<sup>1</sup> This part is pretty simplified.
 
 ### State variables
 
@@ -660,6 +659,10 @@ Keep in mind that keybinds don't require any interface! You could just as well
 put the above code into the draw() without a imgui.Begin()/End() environment and
 it would still work as intended.
 
+### Drawing
+
+<!-- TODO -->
+
 ### Styling
 
 Following code will bring up the style editor, where you can experiment with all
@@ -671,9 +674,9 @@ function draw()
 end
 ```
 
-Anything you change in the style editor will apply to all currently loaded
-plugins. Feel free to bring up the demo window with `imgui.ShowDemoWindow()` and
-check out how everything looks.
+Anything you change in the style editor will apply to all windows in the plugin.
+Feel free to bring up the demo window with `imgui.ShowDemoWindow()` and check
+out how everything looks.
 
 There are two importants sections, sizes and colors. You won't be able to change
 the font, so don't bother. Now, to apply the styles to your plugin you have to
@@ -683,38 +686,7 @@ do following.
 
 ![Style editor sizes panel](img/style_sizes.png)
 
-Until the `imgui_style_var` enum is implemented, copy and paste this into your
-code. When this gets implemented, feel free to delete the table.
-
-```lua
-imgui_style_var = {
-    Alpha = 0,
-    WindowPadding = 1,
-    WindowRounding = 2,
-    WindowBorderSize = 3,
-    WindowMinSize = 4,
-    WindowTitleAlign = 5,
-    ChildRounding = 6,
-    ChildBorderSize = 7,
-    PopupRounding = 8,
-    PopupBorderSize = 9,
-    FramePadding = 10,
-    FrameRounding = 11,
-    FrameBorderSize = 12,
-    ItemSpacing = 13,
-    ItemInnerSpacing = 14,
-    IndentSpacing = 15,
-    ScrollbarSize = 16,
-    ScrollbarRounding = 17,
-    GrabMinSize = 18,
-    GrabRounding = 19,
-    TabRounding = 20,
-    ButtonTextAlign = 21,
-    COUNT = 22
-}
-```
-
-After doing that, you can apply new sizes with this:
+You can apply new sizes with this:
 
 ```lua
 imgui.PushStyleVar(imgui_style_var.property, value)
@@ -771,7 +743,7 @@ directory in your plugins folder.
 Make sure to check out the [available resources](#available-resources) to see
 which values you can access! The common workflow for placing any kind of object
 is going to be **converting values into an object with an utility function and
-then placing them with the according action function**.
+then placing/removing them with the according action function**.
 
 Remember:
 
@@ -781,7 +753,7 @@ Remember:
 - [Object](#quaver-structures)
     - [Utility](#utilities) function
     - [Action](#editor-actions) function
-    - [ActionBatch](#editor-actions) batch function
+    - [ActionBatch](#editor-actions) function
 
 - HitObject
     - `utils.CreateHitObject()`
@@ -803,7 +775,7 @@ Remember:
 ```lua
 -- This is an example for a single hitobject.
 
--- Note at the current editor position in lane 1
+-- Place a note at the current editor position in lane 1
 -- You would place a long note by specifiying an end time, refer to
 -- section Utilities
 obj = utils.CreateHitObject(1, state.SongTime)
@@ -1104,8 +1076,6 @@ The PascalCase name is simply converted into a snake\_case variant.
 | `ImGuiTabItemFlags`    | `imgui_tab_item_flags`   |
 | `ImGuiColorEditFlags`  | `imgui_color_edit_flags` |
 | `ImGuiCol`             | `imgui_col`              |
-
-Note: ImGuiStyleVar is not implemented yet, will come at a later date.
 
 In-depth structure of enums can be found in
 [ImGui.NET/C\#\_Enums](https://github.com/mellinoe/ImGui.NET/tree/master/src/ImGui.NET/Generated)
