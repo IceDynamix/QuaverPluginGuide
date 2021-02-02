@@ -55,6 +55,7 @@
               - [GameMode](#gamemode)
               - [Hitsounds](#hitsounds)
               - [TimeSignature](#timesignature)
+              - [EditorActionType](#editoractiontype)
           - [ImGui Enums](#imgui-enums)
           - [Quaver Structures](#quaver-structures)
               - [HitObjectInfo](#hitobjectinfo)
@@ -771,7 +772,7 @@ Colors have to be provided as a number and the format is RGBA reversed,
 which looks like following if put as Lua code.
 
 ``` lua
-function colorToUint(r, g, b, a)
+function rgbaToUint(r, g, b, a)
     return a*16^6 + b*16^4 + g*16^2 + r
 end
 ```
@@ -1237,6 +1238,51 @@ Quadruple = 4,
 Triple = 3,
 ```
 
+#### EditorActionType
+
+Accessible in Lua with `action_type.Quadruple`.
+
+``` cs
+// Quaver/Quaver.Shared/Screens/Edit/Actions/EditorActionType.cs
+
+None = -1,
+PlaceHitObject,
+RemoveHitObject,
+ResizeLongNote,
+RemoveHitObjectBatch,
+PlaceHitObjectBatch,
+FlipHitObjects,
+MoveHitObjects,
+AddHitsound,
+RemoveHitsound,
+CreateLayer,
+RemoveLayer,
+RenameLayer,
+MoveToLayer,
+ColorLayer,
+ToggleLayerVisibility,
+AddScrollVelocity,
+RemoveScrollVelocity,
+AddScrollVelocityBatch,
+RemoveScrollVelocityBatch,
+AddTimingPoint,
+RemoveTimingPoint,
+AddTimingPointBatch,
+RemoveTimingPointBatch,
+ChangePreviewTime,
+ChangeTimingPointOffset,
+ChangeTimingPointBpm,
+ChangeTimingPointHidden,
+ResetTimingPoint,
+ChangeTimingPointBpmBatch,
+ChangeTimingPointOffsetBatch,
+ChangeScrollVelocityOffsetBatch,
+ChangeScrollVelocityMultiplierBatch,
+ApplyOffset,
+ResnapHitObjects,
+Batch
+```
+
 ### ImGui Enums
 
 The PascalCase name is simply converted into a snake\_case variant.
@@ -1318,6 +1364,9 @@ float Bpm { get; [MoonSharpVisible(false)] set; }
 
 // The signature during this timing point
 TimeSignature Signature { get; [MoonSharpVisible(false)] set; }
+
+// Whether timing lines during this timing point should be hidden or not
+bool Hidden { get; [MoonSharpVisible(false)] set; }
 
 bool IsEditableInLuaScript { get; [MoonSharpVisible(false)] set; }
 
@@ -1443,6 +1492,9 @@ bool HasUnsavedChanges => UndoStack.Count != 0 && UndoStack.Peek() != LastSaveAc
 // Performs a given action for the editor to take.
 void Perform(IEditorAction action);
 
+// Performs a list of actions as a single action.
+void PerformBatch(List<IEditorAction> actions);
+
 // Undos the first action in the stack
 void Undo();
 
@@ -1497,6 +1549,9 @@ void ChangeTimingPointOffset(TimingPointInfo tp, float offset);
 // Changes the BPM of an existing timing point
 void ChangeTimingPointBpm(TimingPointInfo tp, float bpm);
 
+// Changes whether an existing timing point's lines are hidden or not
+void ChangeTimingPointHidden(TimingPointInfo tp, bool hidden);
+
 // Changes a batch of timing points to a new BPM
 void ChangeTimingPointBpmBatch(List<TimingPointInfo> tps, float bpm);
 
@@ -1507,7 +1562,7 @@ void ChangeTimingPointOffsetBatch(List<TimingPointInfo> tps, float offset);
 void ResetTimingPoint(TimingPointInfo tp);
 
 // Adds an editor layer to the map
-void CreateLayer(EditorLayerInfo layer);
+void CreateLayer(EditorLayerInfo layer, int index = -1);
 
 // Removes a non-default editor layer from the map
 void RemoveLayer(EditorLayerInfo layer);
@@ -1521,7 +1576,6 @@ void MoveHitObjectsToLayer(EditorLayerInfo layer, List<HitObjectInfo> hitObjects
 // Changes the color of a non-default editor layer
 void ChangeLayerColor(EditorLayerInfo layer, Color color);
 
-// Toggles the visibility of an existing editor layer
 void ToggleLayerVisibility(EditorLayerInfo layer);
 
 void GoToObjects(string input);
@@ -1529,7 +1583,7 @@ void GoToObjects(string input);
 void SetHitObjectSelection(List<HitObjectInfo> hitObjects);
 
 // Resnaps all notes in a given map to the closest of the specified snaps in the list.
-void ResnapAllNotes(List<int> snaps, List<HitObjectInfo> hitObjectsToResnap);
+void ResnapNotes(List<int> snaps, List<HitObjectInfo> hitObjectsToResnap);
 
 // Detects the BPM of the map and returns the object instance
 EditorBpmDetector DetectBpm();
@@ -1554,9 +1608,11 @@ SliderVelocityInfo CreateScrollVelocity(float time, float multiplier);
 
 HitObjectInfo CreateHitObject(int startTime, int lane, int endTime = 0, HitSounds hitsounds = 0, int editorLayer = 0);
 
-TimingPointInfo CreateTimingPoint(float startTime, float bpm, TimeSignature signature = TimeSignature.Quadruple);
+TimingPointInfo CreateTimingPoint(float startTime, float bpm, TimeSignature signature = TimeSignature.Quadruple, bool hidden = false);
 
 EditorLayerInfo CreateEditorLayer(string name, bool hidden = false, string colorRgb = null);
+
+IEditorAction CreateEditorAction(EditorActionType type, params DynValue[] args);
 
 // Converts milliseconds to the appropriate mm:ss:ms time
 string MillisecondsToTime(float time);

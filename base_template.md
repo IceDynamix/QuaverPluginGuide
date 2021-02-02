@@ -51,6 +51,7 @@
             - [GameMode](#gamemode)
             - [Hitsounds](#hitsounds)
             - [TimeSignature](#timesignature)
+            - [EditorActionType](#editoractiontype)
         - [ImGui Enums](#imgui-enums)
         - [Quaver Structures](#quaver-structures)
             - [HitObjectInfo](#hitobjectinfo)
@@ -1154,6 +1155,12 @@ Accessible in Lua with `hitsounds.Normal`.
 Accessible in Lua with `time_signature.Quadruple`.
 
 <!-- insertEnum, Quaver/Quaver.API/Quaver.API/Enums/TimeSignature.cs -->
+
+#### EditorActionType
+
+Accessible in Lua with `action_type.PlaceHitObject`.
+
+<!-- insertEnum, Quaver/Quaver.Shared/Screens/Edit/Actions/EditorActionType.cs -->
 
 ### ImGui Enums
 
