@@ -2,69 +2,70 @@
 
 ## Table of Contents
 
-  - [Getting started with making a Quaver Editor
+-   [Getting started with making a Quaver Editor
     plugin](#getting-started-with-making-a-quaver-editor-plugin)
-      - [Table of Contents](#table-of-contents)
-      - [Setup](#setup)
-          - [Files](#files)
-          - [Editing](#editing)
-      - [Important concepts](#important-concepts)
-          - [C++ to C\# to Lua?](#c-to-c-to-lua)
-          - [Semicolons](#semicolons)
-          - [if and for](#if-and-for)
-          - [Scope](#scope)
-          - [Constants](#constants)
-          - [Arrays/Lists/Tables](#arraysliststables)
-          - [Pass by value/reference](#pass-by-valuereference)
-          - [Immediate Mode GUI (IMGUI)](#immediate-mode-gui-imgui)
-          - [State variables](#state-variables)
-          - [MoonSharp Core Modules](#moonsharp-core-modules)
-          - [Debugging](#debugging)
-          - [Useful links](#useful-links)
-      - [Making a plugin](#making-a-plugin)
-          - [Windows](#windows)
-          - [Draw text](#draw-text)
-          - [Integer input box](#integer-input-box)
-          - [Any input element](#any-input-element)
-          - [Buttons](#buttons)
-          - [Plots](#plots)
-              - [Pushing and popping](#pushing-and-popping)
-          - [More UI elements](#more-ui-elements)
-          - [Keypresses](#keypresses)
-          - [Drawing](#drawing)
-          - [Styling](#styling)
-              - [Plugin Sizes](#plugin-sizes)
-              - [Plugin Colors](#plugin-colors)
-      - [Interact with the editor and
+    -   [Table of Contents](#table-of-contents)
+    -   [Setup](#setup)
+        -   [Files](#files)
+        -   [Editing](#editing)
+    -   [Important concepts](#important-concepts)
+        -   [C++ to C# to Lua?](#c-to-c-to-lua)
+        -   [Semicolons](#semicolons)
+        -   [if and for](#if-and-for)
+        -   [Scope](#scope)
+        -   [Constants](#constants)
+        -   [Arrays/Lists/Tables](#arraysliststables)
+        -   [Pass by value/reference](#pass-by-valuereference)
+        -   [Immediate Mode GUI (IMGUI)](#immediate-mode-gui-imgui)
+        -   [State variables](#state-variables)
+        -   [MoonSharp Core Modules](#moonsharp-core-modules)
+        -   [Debugging](#debugging)
+        -   [Useful links](#useful-links)
+    -   [Making a plugin](#making-a-plugin)
+        -   [Windows](#windows)
+        -   [Draw text](#draw-text)
+        -   [Integer input box](#integer-input-box)
+        -   [Any input element](#any-input-element)
+        -   [Buttons](#buttons)
+        -   [Plots](#plots)
+            -   [Pushing and popping](#pushing-and-popping)
+        -   [More UI elements](#more-ui-elements)
+        -   [Keypresses](#keypresses)
+        -   [Drawing](#drawing)
+        -   [Styling](#styling)
+            -   [Plugin Sizes](#plugin-sizes)
+            -   [Plugin Colors](#plugin-colors)
+    -   [Interact with the editor and
         maps](#interact-with-the-editor-and-maps)
-          - [Place a single object](#place-a-single-object)
-          - [Place a batch of objects](#place-a-batch-of-objects)
-      - [Advanced concepts](#advanced-concepts)
-          - [State variable management](#state-variable-management)
-          - [Module management](#module-management)
-          - [Using an actual multi-file
+        -   [Place a single object](#place-a-single-object)
+        -   [Place a batch of objects](#place-a-batch-of-objects)
+        -   [Batching editor actions](#batching-editor-actions)
+    -   [Advanced concepts](#advanced-concepts)
+        -   [State variable management](#state-variable-management)
+        -   [Module management](#module-management)
+        -   [Using an actual multi-file
             structure](#using-an-actual-multi-file-structure)
-          - [Intellisense](#intellisense)
-      - [Noteworthy findings](#noteworthy-findings)
-          - [Instant plugin update](#instant-plugin-update)
-          - [Slider/Drag Int/Float 4
+        -   [Intellisense](#intellisense)
+    -   [Noteworthy findings](#noteworthy-findings)
+        -   [Instant plugin update](#instant-plugin-update)
+        -   [Slider/Drag Int/Float 4
             types](#sliderdrag-intfloat-4-types)
-          - [Vector2/3/4 Datatypes](#vector234-datatypes)
-      - [Available resources](#available-resources)
-          - [Quaver Enums](#quaver-enums)
-              - [GameMode](#gamemode)
-              - [Hitsounds](#hitsounds)
-              - [TimeSignature](#timesignature)
-              - [EditorActionType](#editoractiontype)
-          - [ImGui Enums](#imgui-enums)
-          - [Quaver Structures](#quaver-structures)
-              - [HitObjectInfo](#hitobjectinfo)
-              - [SliderVelocityInfo](#slidervelocityinfo)
-              - [TimingPointInfo](#timingpointinfo)
-          - [State](#state)
-          - [Map](#map)
-          - [Editor Actions](#editor-actions)
-          - [Utilities](#utilities)
+        -   [Vector2/3/4 Datatypes](#vector234-datatypes)
+    -   [Available resources](#available-resources)
+        -   [Quaver Enums](#quaver-enums)
+            -   [GameMode](#gamemode)
+            -   [Hitsounds](#hitsounds)
+            -   [TimeSignature](#timesignature)
+            -   [EditorActionType](#editoractiontype)
+        -   [ImGui Enums](#imgui-enums)
+        -   [Quaver Structures](#quaver-structures)
+            -   [HitObjectInfo](#hitobjectinfo)
+            -   [SliderVelocityInfo](#slidervelocityinfo)
+            -   [TimingPointInfo](#timingpointinfo)
+        -   [State](#state)
+        -   [Map](#map)
+        -   [Editor Actions](#editor-actions)
+        -   [Utilities](#utilities)
 
 ## Setup
 
@@ -74,23 +75,23 @@ programming knowledge.
 ### Files
 
 1.  Create a folder in `Quaver/Plugins/yourFolderName`
-    
-      - Will be under `Quaver/bin/Debug/netcoreapp2.1/Plugins/` if
+
+    -   Will be under `Quaver/bin/Debug/netcoreapp2.1/Plugins/` if
         building yourself
 
 2.  Create following files inside the folder
-    
-      - settings.ini
-        
+
+    -   settings.ini
+
         ``` ini
         [Settings]
         Name = Plugin Name
         Author = Your Name
         Description = Your description
         ```
-    
-      - plugin.lua
-        
+
+    -   plugin.lua
+
         ``` lua
         function draw()
             imgui.Begin("Window Title")
@@ -110,24 +111,23 @@ Lua.
 
 ## Important concepts
 
-### C++ to C\# to Lua?
+### C++ to C# to Lua?
 
 [ImGui](https://github.com/ocornut/imgui), the base of the plugin
-system, was originally written in C++. Since Quaver is written in C\#, a
-C\# implementation for ImGui called
+system, was originally written in C++. Since Quaver is written in C#, a
+C# implementation for ImGui called
 [ImGui.NET](https://github.com/mellinoe/ImGui.NET) is used. And finally,
 to make things easier to write, the script language Lua in a sandbox
 environment with the [MoonSharp](https://www.moonsharp.org/) interpreter
 is used. All ImGui or Quaver related functions and structures that work
-in Lua have already been implemented in C\#, which is why the existing
-Quaver C\# code is basically the documentation. All functions that
-derive from ImGui can be accessed with `imgui.function()` and can be
-found in
+in Lua have already been implemented in C#, which is why the existing
+Quaver C# code is basically the documentation. All functions that derive
+from ImGui can be accessed with `imgui.function()` and can be found in
 [ImGuiWrapper.cs](https://github.com/Quaver/Quaver/tree/ui-redesign/Quaver.Shared/Scripting/ImGuiWrapper.cs),
 ImGui enums, their implementations and the Quaver functions and
 structures are spread over many files, which is why I have compiled them
 in this guide at the end in the [Available
-Resources](#available-resources) section, along with the C\# snippets.
+Resources](#available-resources) section, along with the C# snippets.
 
 ### Semicolons
 
@@ -156,7 +156,7 @@ for i=0, 10, 1 do
 end
 ```
 
-You can also use parantheses if you feel more comfortable with it\!
+You can also use parantheses if you feel more comfortable with it!
 
 ``` lua
 for (i=0, 10, 1) do
@@ -216,9 +216,9 @@ end
 ### Constants
 
 Constants aren’t a thing in Lua and the workaround is more effort for
-what it’s worth, so I recommend just sticking to UPPER\_SNAKE\_CASE
-naming for your variables, since that’s the most common way to write
-variable names for constants.
+what it’s worth, so I recommend just sticking to UPPER_SNAKE_CASE naming
+for your variables, since that’s the most common way to write variable
+names for constants.
 
 ### Arrays/Lists/Tables
 
@@ -230,7 +230,7 @@ to the table with `table.insert(myTable, myVariable)`. Access table
 elements with `myTable[key]`, where key can be of any type. You can also
 access them with `myTable.key`.
 
-Important: Take note that everything in Lua is indexed from 1, not 0\!
+Important: Take note that everything in Lua is indexed from 1, not 0!
 
 Related: [Lua-users.org Tables
 Tutorial](http://lua-users.org/wiki/TablesTutorial)
@@ -239,11 +239,11 @@ Tutorial](http://lua-users.org/wiki/TablesTutorial)
 
 When calling a function, it’s important to know how a language handles
 its parameters. Is it pass by value? Is it pass by reference? In Lua
-it’s a mix of both, it depends on the type passed. This is how each
-type behaves:
+it’s a mix of both, it depends on the type passed. This is how each type
+behaves:
 
 | Type       | Pass by…  |
-| ---------- | --------- |
+|------------|-----------|
 | `nil`      | value     |
 | `boolean`  | value     |
 | `number`   | value     |
@@ -296,8 +296,8 @@ We need a way to save the values across frames.
 
 This is done by using the provided `state` object. First you retrieve
 the value from the `state` object, you do your calculations and then
-it’s saved to the state object again. Following function increments
-the variable `n` by 1 on every frame.
+it’s saved to the state object again. Following function increments the
+variable `n` by 1 on every frame.
 
 ``` lua
 function draw()
@@ -325,49 +325,49 @@ of different core modules can be found
 [here](https://github.com/moonsharp-devs/moonsharp/blob/master/src/MoonSharp.Interpreter/Modules/CoreModules.cs),
 Quaver currently uses the HardSandbox presets, which includes:
 
-  - `GlobalConsts`, the global constants `_G`, `_VERSION` and
+-   `GlobalConsts`, the global constants `_G`, `_VERSION` and
     `_MOONSHARP`
-  - `Basic`, includes `assert`, `collectgarbage`, `error`, `print`,
+-   `Basic`, includes `assert`, `collectgarbage`, `error`, `print`,
     `select`, `type`, `tonumber` and `tostring`
-  - `TableIterators`, the table iterators `next`, `ipairs` and `pairs`
-  - `String`, the [string
+-   `TableIterators`, the table iterators `next`, `ipairs` and `pairs`
+-   `String`, the [string
     package](https://www.lua.org/manual/5.2/manual.html#6.4)
-  - `Table`, tables and the [table
+-   `Table`, tables and the [table
     package](https://www.lua.org/manual/5.2/manual.html#6.5) functions
-  - `Math`, the [math
+-   `Math`, the [math
     package](https://www.lua.org/manual/5.2/manual.html#6.6)
-  - `Bit32`, the [bit32
+-   `Bit32`, the [bit32
     package](https://www.lua.org/manual/5.2/manual.html#6.7)
 
 Following modules are disabled in Quaver:
 
-  - `Metatables`, the metatable methods `setmetatable`, `getmetatable`,
+-   `Metatables`, the metatable methods `setmetatable`, `getmetatable`,
     `rawset`, `rawget`, `rawequal` and `rawlen`
-  - `ErrorHandling`, the error handling methods `pcall` and `xpcall`
-  - `Coroutine`, the [coroutine
+-   `ErrorHandling`, the error handling methods `pcall` and `xpcall`
+-   `Coroutine`, the [coroutine
     package](https://www.lua.org/manual/5.2/manual.html#6.2)
-  - `OS_Time`, the time methods of the [os
+-   `OS_Time`, the time methods of the [os
     package](https://www.lua.org/manual/5.2/manual.html#6.9) `clock`,
     `difftime`, `date` and `time`
-  - `LoadMethods`, the load methods `load`, `loadsafe`, `loadfile`,
+-   `LoadMethods`, the load methods `load`, `loadsafe`, `loadfile`,
     `loadfilesafe`, `dofile` and `require`
-  - `OS_System`, the methods of [os
+-   `OS_System`, the methods of [os
     package](https://www.lua.org/manual/5.2/manual.html#6.9) excluding
-    those listed for OS\_Time
-  - `IO`, [io and file
+    those listed for OS_Time
+-   `IO`, [io and file
     package](https://www.lua.org/manual/5.2/manual.html#6.8)
 
 This in turn means you can’t:
 
-  - Use a multi-file/module structure for your code
-      - Everything has to be inside `plugin.lua`
-      - Refer to section [Module Management](#module-management) and
+-   Use a multi-file/module structure for your code
+    -   Everything has to be inside `plugin.lua`
+    -   Refer to section [Module Management](#module-management) and
         [Using an actual multi-file
         structure](#using-an-actual-multi-file-structure) if you’re
         ready to go the extra mile
-  - Import external resources
-  - Connect to the internet/an external API
-  - Work with the local file system (create, read, write)
+-   Import external resources
+-   Connect to the internet/an external API
+-   Work with the local file system (create, read, write)
 
 ### Debugging
 
@@ -393,11 +393,11 @@ the function errors) do not work right now.
 
 ### Useful links
 
-  - [Quaver Github](https://github.com/Quaver)
-  - [ImGui](https://github.com/ocornut/imgui)
-  - [ImGui.NET](https://github.com/mellinoe/ImGui.NET)
-  - [Quaver/ImGuiWrapper.cs](https://github.com/Quaver/Quaver/tree/ui-redesign/Quaver.Shared/Scripting/ImGuiWrapper.cs)
-  - [MoonSharp](https://www.moonsharp.org/)
+-   [Quaver Github](https://github.com/Quaver)
+-   [ImGui](https://github.com/ocornut/imgui)
+-   [ImGui.NET](https://github.com/mellinoe/ImGui.NET)
+-   [Quaver/ImGuiWrapper.cs](https://github.com/Quaver/Quaver/tree/ui-redesign/Quaver.Shared/Scripting/ImGuiWrapper.cs)
+-   [MoonSharp](https://www.moonsharp.org/)
 
 ## Making a plugin
 
@@ -526,13 +526,13 @@ InputInt(string label, ref int v, int step, int step_fast);
 InputInt(string label, ref int v, int step, int step_fast, ImGuiInputTextFlags flags);
 ```
 
-Feel free to play around with the different parameters\! In case you
-want to use the input flags in the last function, take a look at [ImGui
+Feel free to play around with the different parameters! In case you want
+to use the input flags in the last function, take a look at [ImGui
 Enums](#imgui-enums) and check, which one you need to use. The
 documentation for the enums themselves can be found either in the
-[ImGui.NET/C\#\_Enums](https://github.com/mellinoe/ImGui.NET/tree/master/src/ImGui.NET/Generated)
+[ImGui.NET/C#\_Enums](https://github.com/mellinoe/ImGui.NET/tree/master/src/ImGui.NET/Generated)
 or directly in the
-[ImGui/C\_Enums](https://github.com/ocornut/imgui/blob/master/imgui.h#L766)
+[ImGui/C_Enums](https://github.com/ocornut/imgui/blob/master/imgui.h#L766)
 
 ### Any input element
 
@@ -569,7 +569,7 @@ Again, check out the
 [Quaver/ImGuiWrapper.cs](https://github.com/Quaver/Quaver/tree/ui-redesign/Quaver.Shared/Scripting/ImGuiWrapper.cs)
 for all possible input values. You should be able to figure everything
 out by now. Try thinking about how you would go on about making a
-checkbox or an integer slider\!
+checkbox or an integer slider!
 
 ``` cs
 /*...*/ Checkbox(string label, ref bool v) /*...*/
@@ -580,8 +580,8 @@ checkbox or an integer slider\!
 
 A button in Lua is as simple as `imgui.Button(label)`. Checking the
 state of the button (pressed/not pressed) is done by checking the value
-(a boolean) of the button itself. This example prints out “Hello
-World\!” to the console when you press the button.
+(a boolean) of the button itself. This example prints out “Hello World!”
+to the console when you press the button.
 
 ``` lua
 local myButton = imgui.Button("Hello?")
@@ -625,7 +625,7 @@ void PlotLines(string label, ref float[] values, int values_count)
     => ImGui.PlotLines(label, ref values[0], values_count)
 ```
 
-Now you can pass the entire table like this\!
+Now you can pass the entire table like this!
 
 ``` lua
 local values = { 1.0, -1.0, 3.0, 6.6 }
@@ -662,7 +662,7 @@ This kind of principle works with various other elements. Take for
 example:
 
 | Push Function            | Pop Function            |
-| ------------------------ | ----------------------- |
+|--------------------------|-------------------------|
 | `imgui.Begin()`          | `imgui.End()`           |
 | `imgui.Begin___()`       | `imgui.End___()`        |
 | `imgui.Columns(n)`       | `imgui.Columns(1)`      |
@@ -673,8 +673,8 @@ example:
 
 ### More UI elements
 
-There are many more GUI elements to be discovered\! There’s a demo
-window by ImGui, showcasing many of the available elements, which can be
+There are many more GUI elements to be discovered! There’s a demo window
+by ImGui, showcasing many of the available elements, which can be
 accessed by calling the `imgui.ShowDemoWindow()` function in a plugin.
 
 ``` lua
@@ -686,7 +686,7 @@ end
 Everything seen in the demo window can (probably) be realized in a
 Quaver plugin as well. The source code for the demo window can be found
 at
-[ImGui/imgui\_demo.cpp](https://github.com/ocornut/imgui/tree/master/imgui_demo.cpp).
+[ImGui/imgui_demo.cpp](https://github.com/ocornut/imgui/tree/master/imgui_demo.cpp).
 Just apply different syntax (`imgui.Function()` instead of
 `ImGui::Function()`) and apply pointers/addresses/ref parameters as seen
 in [Creating an integer input box](#creating-an-integer-input-box).
@@ -694,7 +694,7 @@ in [Creating an integer input box](#creating-an-integer-input-box).
 ### Keypresses
 
 You can detect keypresses with plugins, which can allow you to make
-assign all kinds of custom keybinds to your favorite actions\! This is
+assign all kinds of custom keybinds to your favorite actions! This is
 achieved by using these utility functions:
 
 ``` cs
@@ -732,7 +732,7 @@ elseif utils.IsKeyDown(keys.LeftControl) and utils.IsKeyPressed(keys.K) then
 end
 ```
 
-Keep in mind that keybinds don’t require any interface\! You could just
+Keep in mind that keybinds don’t require any interface! You could just
 as well put the above code into the draw() without a imgui.Begin()/End()
 environment and it would still work as intended.
 
@@ -882,7 +882,7 @@ everything into a directory in your plugins folder.
 ## Interact with the editor and maps
 
 Make sure to check out the [available resources](#available-resources)
-to see which values you can access\! The common workflow for placing any
+to see which values you can access! The common workflow for placing any
 kind of object is going to be **converting values into an object with an
 utility function and then placing/removing them with the according
 action function**.
@@ -892,24 +892,22 @@ Remember:
 1.  Create Object with `utils.Create___()`
 2.  Place Object with `action.Place___()`
 
-<!-- end list -->
-
-  - [Object](#quaver-structures)
-      - [Utility](#utilities) function
-      - [Action](#editor-actions) function
-      - [ActionBatch](#editor-actions) function
-  - HitObject
-      - `utils.CreateHitObject()`
-      - `action.PlaceHitObject(obj)`
-      - `action.PlaceHitObjectBatch(table)`
-  - ScrollVelocity
-      - `utils.CreateScrollVelocity()`
-      - `action.PlaceScrollVelocity(obj)`
-      - `action.PlaceScrollVelocityBatch(table)`
-  - TimingPoint
-      - `utils.CreateTimingPoint()`
-      - `action.PlaceTimingPoint(obj)`
-      - `action.PlaceTimingPointBatch(table)`
+-   [Object](#quaver-structures)
+    -   [Utility](#utilities) function
+    -   [Action](#editor-actions) function
+    -   [ActionBatch](#editor-actions) function
+-   HitObject
+    -   `utils.CreateHitObject()`
+    -   `action.PlaceHitObject(obj)`
+    -   `action.PlaceHitObjectBatch(table)`
+-   ScrollVelocity
+    -   `utils.CreateScrollVelocity()`
+    -   `action.PlaceScrollVelocity(obj)`
+    -   `action.PlaceScrollVelocityBatch(table)`
+-   TimingPoint
+    -   `utils.CreateTimingPoint()`
+    -   `action.PlaceTimingPoint(obj)`
+    -   `action.PlaceTimingPointBatch(table)`
 
 ### Place a single object
 
@@ -936,8 +934,8 @@ Placing objects in a batch will result in a grouped undo/redo in the
 editor. Keep in mind that there aren’t any “arrays” in the traditional
 sense, only tables (refer to [Arrays/Lists/Tables](#arraysliststables)).
 The following example shows how to work with a batch of SVs. The same
-concepts apply to hit objects and timing points\! You can find an
-example in my SV plugin:
+concepts apply to hit objects and timing points! You can find an example
+in my SV plugin:
 [`sv_linear()`](https://github.com/IceDynamix/iceSV/blob/master/modules/sv.lua),
 [`editor_placeSVs()`](https://github.com/IceDynamix/iceSV/blob/master/modules/editor.lua).
 
@@ -953,6 +951,31 @@ table.insert(svList, svObject2)
 -- Alternatively use actions.PlaceScrollVelocityBatch({svObject1, svObject2})
 actions.PlaceScrollVelocityBatch(svList)
 ```
+
+### Batching editor actions
+
+Each editor action will add one element to the undo stack, so removing a
+batch of notes and adding a new one will create 2 elements on the undo
+stack. You can batch actions together so they only add one element on
+the undo stack! Create an editor action with
+`utils.CreateEditorAction(type, arg1, ...)` using the type enum defined
+at [EditorActionType](#editoractiontype) and pass the arguments you
+would usually pass to the regular action function after the type.
+
+``` lua
+-- Example that removes 2 objects and adds a new one in a single undo step
+toRemove = {state.HitObjects[1], state.HitObjects[2]}
+toAdd = utils.CreateHitObject(0, 1)
+
+actions.PerformBatch({
+    utils.CreateEditorAction(action_type.RemoveHitObjectBatch, toRemove),
+    utils.CreateEditorAction(action_type.PlaceHitObject, toAdd)
+})
+```
+
+When creating actions in a loop and pushing them to a table, keep in
+mind not to name your table `actions` since the name is already used by
+Quaver.
 
 ## Advanced concepts
 
@@ -1048,18 +1071,18 @@ function saveStateVariables(menuID, variables) --[[ code ]] end
 The most logical behavior I would put the functions into different
 files/modules would be
 
-  - menu
-      - `exampleMenu()`
-  - util/management
-      - `retrieveStateVariables()`
-      - `saveStateVariables()`
+-   menu
+    -   `exampleMenu()`
+-   util/management
+    -   `retrieveStateVariables()`
+    -   `saveStateVariables()`
 
 When you put functions or variables into different files/modules, all
 you’re really doing is defining a table with value and function
 assignments in another file, so in the end you can call your functions
 like `menu.example()` or `utilities.retrieveStateVariables()`. But if a
 module is just defining functions and values for a table, then that can
-be done in a single file as well\!
+be done in a single file as well!
 
 ``` lua
 menu = {}
@@ -1103,16 +1126,16 @@ Now, this can’t be done without external tools, because the sandboxed
 Lua environment doesn’t allow for file reading or writing. This is how
 it would work though:
 
-  - Create a directory in your plugin folder
-  - Put all of your separate Lua files in
-  - Define functions and variables in each file like they were part of a
+-   Create a directory in your plugin folder
+-   Put all of your separate Lua files in
+-   Define functions and variables in each file like they were part of a
     table with the same name as the file
-      - Example: `menu.lua` contains the functions `menu.information()`
+    -   Example: `menu.lua` contains the functions `menu.information()`
         and `style.lua` contains `style.variable`
-  - Iterate over each Lua file in the directory and generate `fileName =
-    {}` for each and write that to a new file `plugin.lua` in the parent
-    directory
-  - Append all files in the directory to the created file
+-   Iterate over each Lua file in the directory and generate
+    `fileName = {}` for each and write that to a new file `plugin.lua`
+    in the parent directory
+-   Append all files in the directory to the created file
 
 I’m using this system in my personal project
 [iceSV](https://github.com/IceDynamix/iceSV) and use Python for it. Feel
@@ -1121,19 +1144,19 @@ few pros and cons to this.
 
 Pros:
 
-  - Less clutter
-  - Smaller files
-  - More structure
-      - Makes you think more about how you want to structure your code
+-   Less clutter
+-   Smaller files
+-   More structure
+    -   Makes you think more about how you want to structure your code
 
 Cons:
 
-  - Not worth the trouble setting up for a small project
-  - The file does not automatically recompile on save (not that it
+-   Not worth the trouble setting up for a small project
+-   The file does not automatically recompile on save (not that it
     worked anyway for me)
-      - I made a AutoHotkey script that runs the `compile.py` when I
+    -   I made a AutoHotkey script that runs the `compile.py` when I
         press F6
-  - User has to download a lot more files when pulling with Git
+-   User has to download a lot more files when pulling with Git
 
 ### Intellisense
 
@@ -1187,14 +1210,14 @@ I assume it’s got something to do with how Lua table indexing starts at
 
 ImGui uses a custom array datatype that contains 2/3/4 elements, called
 Vector2 (or Vector3/Vector4), depending on the amount of elements. If a
-function asks for it, you can use the function `imgui.CreateVector2(int
-x, int y)` (or the 3/4 element equivalents) to create a vector of that
-type that you can pass to the function. You can (almost always) use a
-regular table of length 2/3/4 instead though, since it has been observed
-to work as well. The only instance I have personally found it to not
-work is for the size parameter in the plot functions, where you’re
-forced to create a vector using said function as it won’t work
-otherwise.
+function asks for it, you can use the function
+`imgui.CreateVector2(int x, int y)` (or the 3/4 element equivalents) to
+create a vector of that type that you can pass to the function. You can
+(almost always) use a regular table of length 2/3/4 instead though,
+since it has been observed to work as well. The only instance I have
+personally found it to not work is for the size parameter in the plot
+functions, where you’re forced to create a vector using said function as
+it won’t work otherwise.
 
 ## Available resources
 
@@ -1240,7 +1263,7 @@ Triple = 3,
 
 #### EditorActionType
 
-Accessible in Lua with `action_type.Quadruple`.
+Accessible in Lua with `action_type.PlaceHitObject`.
 
 ``` cs
 // Quaver/Quaver.Shared/Screens/Edit/Actions/EditorActionType.cs
@@ -1272,23 +1295,26 @@ RemoveTimingPointBatch,
 ChangePreviewTime,
 ChangeTimingPointOffset,
 ChangeTimingPointBpm,
+ChangeTimingPointSignature,
 ChangeTimingPointHidden,
 ResetTimingPoint,
 ChangeTimingPointBpmBatch,
+ChangeTimingPointSignatureBatch,
 ChangeTimingPointOffsetBatch,
 ChangeScrollVelocityOffsetBatch,
 ChangeScrollVelocityMultiplierBatch,
 ApplyOffset,
 ResnapHitObjects,
-Batch
+Batch,
+ReverseHitObjects,
 ```
 
 ### ImGui Enums
 
-The PascalCase name is simply converted into a snake\_case variant.
+The PascalCase name is simply converted into a snake_case variant.
 
 | Enum                   | Accessible in Lua with   |
-| ---------------------- | ------------------------ |
+|------------------------|--------------------------|
 | `ImGuiInputTextFlags`  | `imgui_input_text_flags` |
 | `ImGuiDataType`        | `imgui_data_type`        |
 | `ImGuiTreeNodeFlags`   | `imgui_tree_node_flags`  |
@@ -1304,9 +1330,9 @@ The PascalCase name is simply converted into a snake\_case variant.
 | `ImGuiCol`             | `imgui_col`              |
 
 In-depth structure of enums can be found in
-[ImGui.NET/C\#\_Enums](https://github.com/mellinoe/ImGui.NET/tree/master/src/ImGui.NET/Generated)
+[ImGui.NET/C#\_Enums](https://github.com/mellinoe/ImGui.NET/tree/master/src/ImGui.NET/Generated)
 and in
-[ImGui/C\_Enums](https://github.com/ocornut/imgui/blob/master/imgui.h#L766).
+[ImGui/C_Enums](https://github.com/ocornut/imgui/blob/master/imgui.h#L766).
 
 ### Quaver Structures
 
@@ -1480,7 +1506,7 @@ double GetNearestSnapTimeFromTime(bool forwards, int snap, float time);
 
 Accessible via `actions.function()`. Reminder: Any place/remove function
 needs to be called in Lua with an object created by the appropriate
-[utility](#utilities) function\! Refer to: [Interacting with the editor
+[utility](#utilities) function! Refer to: [Interacting with the editor
 and maps](#interact-with-the-editor-and-maps)
 
 ``` cs
@@ -1549,11 +1575,17 @@ void ChangeTimingPointOffset(TimingPointInfo tp, float offset);
 // Changes the BPM of an existing timing point
 void ChangeTimingPointBpm(TimingPointInfo tp, float bpm);
 
+// Changes the Signature of an existing timing point
+void ChangeTimingPointSignature(TimingPointInfo tp, int timeSig);
+
 // Changes whether an existing timing point's lines are hidden or not
 void ChangeTimingPointHidden(TimingPointInfo tp, bool hidden);
 
 // Changes a batch of timing points to a new BPM
 void ChangeTimingPointBpmBatch(List<TimingPointInfo> tps, float bpm);
+
+// Changes a batch of timing points to a new signature
+void ChangeTimingPointSignatureBatch(List<TimingPointInfo> tps, int sig);
 
 // Moves a batch of timing points' offsets by a given value
 void ChangeTimingPointOffsetBatch(List<TimingPointInfo> tps, float offset);

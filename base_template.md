@@ -37,6 +37,7 @@
     - [Interact with the editor and maps](#interact-with-the-editor-and-maps)
         - [Place a single object](#place-a-single-object)
         - [Place a batch of objects](#place-a-batch-of-objects)
+        - [Batching editor actions](#batching-editor-actions)
     - [Advanced concepts](#advanced-concepts)
         - [State variable management](#state-variable-management)
         - [Module management](#module-management)
@@ -898,6 +899,29 @@ table.insert(svList, svObject2)
 -- Alternatively use actions.PlaceScrollVelocityBatch({svObject1, svObject2})
 actions.PlaceScrollVelocityBatch(svList)
 ```
+
+### Batching editor actions
+
+Each editor action will add one element to the undo stack, so removing a batch
+of notes and adding a new one will create 2 elements on the undo stack. You can
+batch actions together so they only add one element on the undo stack! Create an
+editor action with `utils.CreateEditorAction(type, arg1, ...)` using the type enum
+defined at [EditorActionType](#editoractiontype) and pass the arguments you
+would usually pass to the regular action function after the type.
+
+```lua
+-- Example that removes 2 objects and adds a new one in a single undo step
+toRemove = {state.HitObjects[1], state.HitObjects[2]}
+toAdd = utils.CreateHitObject(0, 1)
+
+actions.PerformBatch({
+    utils.CreateEditorAction(action_type.RemoveHitObjectBatch, toRemove),
+    utils.CreateEditorAction(action_type.PlaceHitObject, toAdd)
+})
+```
+
+When creating actions in a loop and pushing them to a table, keep in mind not to
+name your table `actions` since the name is already used by Quaver.
 
 ## Advanced concepts
 
